@@ -59,7 +59,7 @@ void SubByte(BYTE state[][4]){
         }
     }
 }
-void InSubByte(BYTE state[][4]){
+void Inv_SubByte(BYTE state[][4]){
     int i, k;
     BYTE x, y;
     for(i=0;i<4;i++){
@@ -90,6 +90,17 @@ void StateToOut(BYTE state[][4], BYTE* out){
   
 }
 
+void printState(BYTE state[][4]){
+    int i, k;
+    for(i=0;i<4;i++){
+        printf("\n");        
+        for(k=0;k<4;k++){
+            printf("%3x",state[i][k]);
+        }
+    }
+    printf("\n\n");
+}
+
 void main(){
     int i, k;
     BYTE state[4][4];
@@ -106,30 +117,15 @@ void main(){
 
     InToState(in, state);
     printf("\nState: ");
-    for(i=0;i<4;i++){
-        printf("\n");
-        for(k=0;k<4;k++){
-            printf("%3x", state[i][k]);
-        }
-    }
+    printState(state);
 
     SubByte(state);
     printf("\nAfter SubByte state; ");
-     for(i=0;i<4;i++){
-        printf("\n");
-        for(k=0;k<4;k++){
-            printf("%3x", state[i][k]);
-        }
-    }
+    printState(state);
 
-    InSubByte(state);
+    Inv_SubByte(state);
     printf("\nAfer InverseSubByte state: ");
-     for(i=0;i<4;i++){
-        printf("\n");
-        for(k=0;k<4;k++){
-            printf("%3x", state[i][k]);
-        }
-    }
+    printState(state);
 
     StateToOut(state, out);
     printf("\nOut String: ");
