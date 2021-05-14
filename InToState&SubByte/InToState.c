@@ -7,6 +7,7 @@ typedef unsigned char BYTE;
 
 void InToState(BYTE* in, BYTE (*state)[4]);
 void StateToOut(BYTE state[][4], BYTE* out);
+void printState(BYTE state[][4]);
 
 void InToState(BYTE* in, BYTE (*state)[4]){
     int i, k;
@@ -28,6 +29,17 @@ void StateToOut(BYTE state[][4], BYTE* out){
    
 }
 
+void printState(BYTE state[][4]){
+    int i, k;
+    for(i=0;i<4;i++){
+        printf("\n");
+        for(k=0;k<4;k++){
+            printf("%3x",state[i][k]);
+        }
+    }
+    printf("\n");
+}
+
 void main(){
     int i, k;
     BYTE state[4][4];
@@ -45,12 +57,7 @@ void main(){
     InToState(in, state);
 
     printf("\n\nState:");
-    for(i=0;i<4;i++){
-        printf("\n");
-        for(k=0;k<4;k++){
-            printf("%3x", state[i][k]);
-        }
-    }
+    printState(state);
 
     StateToOut(state, out);
     printf("\n\nOut String:\t");
