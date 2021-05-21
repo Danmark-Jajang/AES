@@ -48,6 +48,11 @@ BYTE isbox[16][16] =
     0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D
 };
 
+void SubByte(BYTE state[][4]);
+void Inv_SubByte(BYTE state[][4]);
+void InToState(BYTE* in, BYTE state[][4]);
+void StateToOut(BYTE state[][4], BYTE* out);
+
 void SubByte(BYTE state[][4]){
    int i, k;
    BYTE x, y;
@@ -87,7 +92,6 @@ void StateToOut(BYTE state[][4], BYTE* out){
            out[i*4+k] = state[i][k];
         }
     }
-  
 }
 
 void printState(BYTE state[][4]){
