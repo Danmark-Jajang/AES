@@ -5,10 +5,10 @@ typedef unsigned int WORD;
 typedef unsigned char BYTE;
 
 #define Nr 10 //AES Round Number
-#define Nb 4  //AES Block Size (4 WOrd)
+#define Nb 4  //AES Block Size (4 Word)
 #define Nk 4  //AES Key Size (4 Word)
 
-#define BTOW(b1, b2, b3, b4) (((WORD)b1<<24)|((WORD)b2<<16)|((WORD)b3<<8)|(WORD)b4)
+#define BTOW(b1, b2, b3, b4) (((WORD)b1<<24)|((WORD)b2<<16)|((WORD)b3<<8)|((WORD)b4))
 #define HIHEX(x) (x>>4)
 #define LOWHEX(x) (x&0x0F)
 
@@ -47,20 +47,20 @@ void KeyExpansion(BYTE *key, WORD *w){  //128bit의 키를 이용해 44개의 WO
     w[3] = BTOW(key[12], key[13], key[14], key[15]);
 
     //Round 1~10, My Method
-    for(i=1;i<=Nr;i++){
-        w[i*Nb] = SubWord(RotWord(w[i*Nb-1]))^Rcon[i]^w[(i-1)*Nb];
-        w[i*Nb+1] = w[(i-1)*Nb+1]^w[i*Nb];
-        w[i*Nb+2] = w[(i-1)*Nb+2]^w[i*Nb+1];
-        w[i*Nb+3] = w[(i-1)*Nb+3]^w[i*Nb+2];
-    }
+    // for(i=1;i<=Nr;i++){
+    //     w[i*Nb] = SubWord(RotWord(w[i*Nb-1]))^Rcon[i]^w[(i-1)*Nb];
+    //     w[i*Nb+1] = w[(i-1)*Nb+1]^w[i*Nb];
+    //     w[i*Nb+2] = w[(i-1)*Nb+2]^w[i*Nb+1];
+    //     w[i*Nb+3] = w[(i-1)*Nb+3]^w[i*Nb+2];
+    // }
 
     //Round 1~10. Pf Method
-    // for(i=1;i<=Nr;i++){
-    //     w[i*Nb] = (SubWord(RotWord(w[i*Nb-1]))^Rcon[i])^w[(i-1)*Nb];
-    //     w[i*Nb+1] = w[i*Nb]^w[i*Nb-3];
-    //     w[i*Nb+2] = w[i*Nb+1]^w[i*Nb-2];
-    //     w[i*Nb+3] = w[i*Nb+2]^w[i*Nb-1];
-    // }
+    for(i=1;i<=Nr;i++){
+        w[i*Nb] = (SubWord(RotWord(w[i*Nb-1]))^Rcon[i])^w[(i-1)*Nb];
+        w[i*Nb+1] = w[i*Nb]^w[i*Nb-3];
+        w[i*Nb+2] = w[i*Nb+1]^w[i*Nb-2];
+        w[i*Nb+3] = w[i*Nb+2]^w[i*Nb-1];
+    }
 }
 
 WORD RotWord(WORD w){
@@ -71,10 +71,10 @@ WORD SubWord(WORD w){
     WORD t1 = 0, t2 = 0, t3 = 3, t4 = 0;
     WORD o1 = 0, o2 = 0, o3 = 0, o4 = 0;
 
-    t1 = (w&0xFF000000)>>24;
-    t2 = (w&0x00FF0000)>>16;
-    t3 = (w&0x0000FF00)>>8;
-    t4 = (w&0x000000FF);
+    t1 = (w & 0xFF000000)>>24;
+    t2 = (w & 0x00FF0000)>>16;
+    t3 = (w & 0x0000FF00)>>8;
+    t4 = (w & 0x000000FF);
 
     o1 = ((WORD)(sbox[HIHEX(t1)][LOWHEX(t1)]))<<24;
     o2 = ((WORD)(sbox[HIHEX(t2)][LOWHEX(t2)]))<<16;
@@ -95,6 +95,7 @@ void main(){
     };
 
     KeyExpansion(key, w);
+
     for(i=0;i<(Nb*(Nr+1));i++){
         printf("w[%02d]: %08x / ", i, w[i]);
         if(i%4==3) printf("\n");
